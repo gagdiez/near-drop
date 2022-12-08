@@ -16,7 +16,7 @@ impl Contract {
             .remove(&public_key)
             .expect("Missing drop in callback");
 
-        drop.claim_for(account_id)
+        drop.promise_for_claiming(account_id)
             .then(drop.promise_to_resolve_claim(false))
     }
 
@@ -25,7 +25,7 @@ impl Contract {
         let public_key = env::signer_account_pk();
 
         if let None = self.drop_for_key.get(&public_key) {
-            panic!("No drop for this signing key")
+            panic!("No drop for this key")
         }
 
         let create_args = json!({ "new_account_id": account_id, "new_public_key": public_key })
@@ -68,7 +68,7 @@ impl Contract {
             .remove(&public_key)
             .expect("Missing drop in callback");
 
-        drop.claim_for(account_id)
+        drop.promise_for_claiming(account_id)
             .then(drop.promise_to_resolve_claim(true))
     }
 }

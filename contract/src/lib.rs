@@ -5,9 +5,9 @@ use near_sdk::collections::UnorderedMap;
 use near_sdk::json_types::U128;
 use near_sdk::{env, near_bindgen, AccountId, BorshStorageKey, PanicOnDefault, Promise, PublicKey};
 
-mod drop_types;
-mod constants;
 mod claim;
+mod constants;
+mod drop_types;
 mod ft;
 mod token;
 
@@ -35,16 +35,11 @@ impl Contract {
     }
 
     #[payable]
-    pub fn create_near_drop(
-        &mut self,
-        public_key: PublicKey,
-        tokens: U128,
-    ) -> Promise {
+    pub fn create_near_drop(&mut self, public_key: PublicKey, tokens: U128) -> Promise {
         let funder = env::predecessor_account_id();
         let drop = token::create_near_drop(funder, tokens);
         self.store_drop_and_key(public_key, drop)
     }
-
 
     #[payable]
     pub fn create_ft_drop(
@@ -57,7 +52,6 @@ impl Contract {
         let drop = ft::create_ft_drop(funder, ft_contract, tokens);
         self.store_drop_and_key(public_key, drop)
     }
-
 
     fn store_drop_and_key(&mut self, public_key: PublicKey, drop: DropType) -> Promise {
         self.drop_for_key.insert(&public_key, &drop);

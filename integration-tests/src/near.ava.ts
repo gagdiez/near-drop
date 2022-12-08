@@ -16,17 +16,18 @@ test.beforeEach(async (t) => {
   const root = worker.rootAccount;
 
   // Deploy TDA contract
-  await root.deploy('./aux/near.wasm')
+  await root.deploy('./aux/TLA.wasm')
 
   // Deploy contract
   const contract = await root.createSubAccount('contract');
-  const creator = await root.createSubAccount('creator');
-  const alice = await root.createSubAccount('alice');
-
   await contract.deploy(process.argv[2]);
 
   // Initialize the contract
   await contract.call(contract, "new", { top_level_account: root.accountId })
+
+  // Create test accounts
+  const creator = await root.createSubAccount('creator');
+  const alice = await root.createSubAccount('alice');
 
   // Save state for test runs, it is unique for each test
   t.context.worker = worker;

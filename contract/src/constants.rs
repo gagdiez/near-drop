@@ -1,8 +1,8 @@
-use near_sdk::{Gas};
+use near_sdk::Gas;
 
 // Bytes used to store common data types
-pub const PK_STORAGE: u128 = 32;  // PublicKey
-pub const ACC_STORAGE: u128 = 32 + 64;  // AccountId
+pub const PK_STORAGE: u128 = 32; // PublicKey
+pub const ACC_STORAGE: u128 = 32 + 64; // AccountId
 
 /*
     minimum amount of storage required to store an access key on the contract
@@ -22,13 +22,9 @@ pub const CREATE_ACCOUNT_FEE: u128 = 1_840_000_000_000_000_000_000; // 0.00184 N
 pub const CREATE_CALLBACK_GAS: Gas = Gas(55_000_000_000_000); // 55 TGas
 pub const CLAIM_CALLBACK_GAS: Gas = Gas(5_000_000_000_000); // 5 TGas
 
-
-
 // Actual amount of GAS to attach when creating a new account. No unspent GAS will be attached on top of this (weight of 0)
 pub const GAS_FOR_CREATE_ACCOUNT: Gas = Gas(28_000_000_000_000); // 28 TGas
 
-
 // FT
-
 pub const MIN_GAS_FOR_STORAGE_DEPOSIT: Gas = Gas(5_000_000_000_000); // 5 TGas
 pub const MIN_GAS_FOR_FT_TRANSFER: Gas = Gas(5_000_000_000_000); // 5 TGas
