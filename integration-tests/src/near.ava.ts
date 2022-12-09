@@ -57,7 +57,7 @@ test('drop on an existing account', async (t) => {
       public_key: pkDrop?.getPublicKey()?.toString(),
       tokens: NEAR.parse("1 N").toString()
     },
-    { attachedDeposit: "1026400000000000000000000" } // 1.0264 N
+    { attachedDeposit: "1045400000000000000000000" } // 1.0264 N
   )
 
   // Use the key to call "claim_for" to claim NEAR for account_id 
@@ -95,7 +95,7 @@ test('drop on a new account', async (t) => {
       tokens: NEAR.parse("1 N").toString(),
       public_key: pkDrop?.getPublicKey()?.toString()
     },
-    { attachedDeposit: "1026400000000000000000000" }
+    { attachedDeposit: "1045400000000000000000000" }
   )
 
   // Try to claim on the longest account string
@@ -136,7 +136,7 @@ test('drop on a new account with no money', async (t) => {
       tokens: "1",
       public_key: pkDrop?.getPublicKey()?.toString()
     },
-    { attachedDeposit: "25400000000000000000001" }
+    { attachedDeposit: "45400000000000000000001" }
   )
 
   // Create an account with the longest possible name

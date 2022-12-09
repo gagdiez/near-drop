@@ -45,11 +45,10 @@ impl Contract {
     pub fn create_ft_drop(
         &mut self,
         public_key: PublicKey,
-        tokens: U128,
         ft_contract: AccountId,
     ) -> Promise {
         let funder = env::predecessor_account_id();
-        let drop = ft::create_ft_drop(funder, ft_contract, tokens);
+        let drop = ft::create_ft_drop(funder, ft_contract);
         self.store_drop_and_key(public_key, drop)
     }
 

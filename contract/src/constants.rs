@@ -13,7 +13,7 @@ pub const ACCESS_KEY_STORAGE: u128 = 1_000_000_000_000_000_000_000; // 0.001 N
 
 // Allowance for the access key to cover GAS fees when the account is claimed.
 // This amount will not be "reserved" on the contract but must be available when GAS is burnt using the access key.
-pub const ACCESS_KEY_ALLOWANCE: u128 = 20_000_000_000_000_000_000_000; // 0.02 N (200 TGas)
+pub const ACCESS_KEY_ALLOWANCE: u128 = 40_000_000_000_000_000_000_000; // 0.04 N (150 TGas)
 
 // Cost of creating a new account with longest possible name
 pub const CREATE_ACCOUNT_FEE: u128 = 1_840_000_000_000_000_000_000; // 0.00184 N
@@ -28,3 +28,4 @@ pub const GAS_FOR_CREATE_ACCOUNT: Gas = Gas(28_000_000_000_000); // 28 TGas
 // FT
 pub const MIN_GAS_FOR_STORAGE_DEPOSIT: Gas = Gas(5_000_000_000_000); // 5 TGas
 pub const MIN_GAS_FOR_FT_TRANSFER: Gas = Gas(5_000_000_000_000); // 5 TGas
+pub const FT_CLAIM_CALLBACK_GAS: Gas = Gas(10_000_000_000_000); // 5 TGas

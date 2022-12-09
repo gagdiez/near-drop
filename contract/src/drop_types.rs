@@ -25,8 +25,8 @@ impl Dropper for DropType {
 
     fn promise_to_resolve_claim(&self, created: bool) -> Promise {
         match self {
-            DropType::NEAR(tkdrop) => tkdrop.promise_to_resolve_claim(created),
-            DropType::FT(_) => panic!("Not implemented"),
+            DropType::NEAR(tk_drop) => tk_drop.promise_to_resolve_claim(created),
+            DropType::FT(ft_drop) => ft_drop.promise_to_resolve_claim(created),
         }
     }
 }

@@ -22,6 +22,8 @@ pub struct FTDrop {
 
 impl Dropper for FTDrop {
     fn promise_for_claiming(&self, account_id: AccountId) -> Promise {
+        assert!(self.tokens > 0, "No tokens to drop");
+
         let deposit_args = json!({ "account_id": account_id })
             .to_string()
             .into_bytes()
@@ -50,7 +52,7 @@ impl Dropper for FTDrop {
 
     fn promise_to_resolve_claim(&self, created: bool) -> Promise {
         Contract::ext(env::current_account_id())
-            .with_static_gas(CLAIM_CALLBACK_GAS)
+            .with_static_gas(FT_CLAIM_CALLBACK_GAS)
             .with_unused_gas_weight(0)
             .resolve_ft_claim(
                 created,
@@ -61,7 +63,7 @@ impl Dropper for FTDrop {
     }
 }
 
-pub fn create_ft_drop(funder: AccountId, ft_contract: AccountId, tokens: U128) -> DropType {
+pub fn create_ft_drop(funder: AccountId, ft_contract: AccountId) -> DropType {
     let attached = env::attached_deposit();
     let required = CREATE_ACCOUNT_FEE + ACCESS_KEY_ALLOWANCE + ACCESS_KEY_STORAGE + FT_STORAGE;
 
@@ -70,7 +72,7 @@ pub fn create_ft_drop(funder: AccountId, ft_contract: AccountId, tokens: U128) -
     DropType::FT(FTDrop {
         funder,
         ft_contract,
-        tokens: tokens.0,
+        tokens: 0,
     })
 }
 
@@ -79,7 +81,7 @@ impl Contract {
     // Fund an existing drop
     pub fn ft_on_transfer(
         &mut self,
-        _sender_id: AccountId,
+        sender_id: AccountId,
         amount: U128,
         msg: PublicKey,
     ) -> PromiseOrValue<U128> {
@@ -90,10 +92,9 @@ impl Contract {
             tokens,
         }) = self.drop_for_key.get(&msg).expect("Missing Key")
         {
-            let predecessor = env::predecessor_account_id();
             assert!(
-                ft_contract == predecessor,
-                "Wrong FTs, expected {ft_contract}, got {predecessor}"
+                ft_contract == env::predecessor_account_id(),
+                "Wrong FTs, expected {ft_contract}"
             );
 
             // Update and insert again
@@ -127,25 +128,23 @@ impl Contract {
         }
 
         if result.is_err() {
-            to_refund += tokens
+            // Return Tokens
+            let transfer_args = json!({"receiver_id": funder, "amount": U128(tokens)})
+                .to_string()
+                .into_bytes()
+                .to_vec();
+
+            Promise::new(ft_contract).function_call_weight(
+                "ft_transfer".to_string(),
+                transfer_args,
+                1,
+                MIN_GAS_FOR_FT_TRANSFER,
+                GasWeight(0),
+            );
         }
 
         // Return NEAR
         Promise::new(funder.clone()).transfer(to_refund);
-
-        // Return Tokens
-        let transfer_args = json!({"receiver_id": funder, "amount": tokens})
-            .to_string()
-            .into_bytes()
-            .to_vec();
-
-        Promise::new(ft_contract).function_call_weight(
-            "ft_transfer".to_string(),
-            transfer_args,
-            1,
-            MIN_GAS_FOR_FT_TRANSFER,
-            GasWeight(0),
-        );
 
         true
     }
